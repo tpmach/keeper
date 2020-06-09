@@ -1,10 +1,19 @@
 import React, { useState } from 'react'
+import AddIcon from "@material-ui/icons/Add";
+import Fab from '@material-ui/core/Fab';
+import Zoom from '@material-ui/core/Zoom';
 
 function CreateArea(props){
   const [note , setNote] = useState({
     title:"",
     content:""
   })
+
+  const [zoomIn, setZoomIn] = useState(false)
+
+  function handleTextAreaClick(){
+    setZoomIn(true)
+  }
 
   function handleChange(event) {
     const {name, value} = event.target
@@ -19,19 +28,39 @@ function CreateArea(props){
 
   function submitNote(event) {
     props.onAdd(note)
-    event.preventDefault()
+    setZoomIn(false)
     setNote({
       title:"",
       content: ""
     })
+    event.preventDefault()
   }
 
   return (
     <div>
       <form className="create-note">
-        <input onChange={handleChange} name="title" placeholder="Title" value={note.title} />
-        <textarea onChange={handleChange} name="content" placeholder="Take a note..." rows="3" value={note.content}/>
-        <button onClick={submitNote}>Add</button>
+        {zoomIn && 
+          <input 
+            onChange={handleChange} 
+            name="title" 
+            placeholder="Title" 
+            value={note.title} 
+            autoFocus = {true}  
+          />
+        }
+        <textarea 
+          onClick={handleTextAreaClick} 
+          onChange={handleChange} 
+          name="content" 
+          placeholder="Take a note..." 
+          rows= {zoomIn ? "3" : "1"}
+          value={note.content}/>
+        
+    
+        <Zoom in={zoomIn}>
+          <Fab onClick={submitNote}><AddIcon /></Fab>
+        </Zoom>
+        
       </form>
     </div>
   )
